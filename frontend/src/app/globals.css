@@ -117,7 +117,7 @@ h1, h2, h3, h4, .digital {
     );
     background-size: 100% 5px;
     /*animation: scanline 8s linear infinite;*/
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 @keyframes scanline {

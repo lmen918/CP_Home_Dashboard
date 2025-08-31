@@ -4,7 +4,7 @@ export const Footer = () => {
             <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row justify-between items-center">
                     <div className="text-sm digital mb-2 md:mb-0">
-                        <span className="neon-blue">CYBERHUB</span> <span className="text-gray-400">v2.3.7</span>
+                        <span className="neon-blue">CYBERHOMEHUB</span> <span className="text-gray-400">v2.3.7</span>
                         <span className="mx-2 text-gray-600">|</span>
                         <span className="neon-purple">NODE:</span> <span className="text-gray-400">PRIMARY</span>
                     </div>
