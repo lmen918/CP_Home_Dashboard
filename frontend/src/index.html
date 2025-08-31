@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberPunk Control Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --dark-bg: #0d0221;
+            --darker-bg: #070116;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-bg);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .digital {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--neon-blue);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--neon-pink);
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(32px, 9999px, 28px, 0); }
+            10% { clip: rect(13px, 9999px, 37px, 0); }
+            20% { clip: rect(45px, 9999px, 33px, 0); }
+            30% { clip: rect(31px, 9999px, 94px, 0); }
+            40% { clip: rect(88px, 9999px, 98px, 0); }
+            50% { clip: rect(9px, 9999px, 98px, 0); }
+            60% { clip: rect(37px, 9999px, 17px, 0); }
+            70% { clip: rect(77px, 9999px, 34px, 0); }
+            80% { clip: rect(55px, 9999px, 49px, 0); }
+            90% { clip: rect(10px, 9999px, 2px, 0); }
+            100% { clip: rect(35px, 9999px, 53px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(94px, 9999px, 91px, 0); }
+            10% { clip: rect(92px, 9999px, 59px, 0); }
+            20% { clip: rect(33px, 9999px, 86px, 0); }
+            30% { clip: rect(22px, 9999px, 48px, 0); }
+            40% { clip: rect(73px, 9999px, 40px, 0); }
+            50% { clip: rect(42px, 9999px, 75px, 0); }
+            60% { clip: rect(67px, 9999px, 13px, 0); }
+            70% { clip: rect(90px, 9999px, 82px, 0); }
+            80% { clip: rect(70px, 9999px, 89px, 0); }
+            90% { clip: rect(11px, 9999px, 48px, 0); }
+            100% { clip: rect(3px, 9999px, 24px, 0); }
+        }
+
+        .neon-border {
+            position: relative;
+            box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            transition: all 0.3s ease;
+        }
+
+        .neon-border:hover {
+            box-shadow: 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink), 0 0 35px var(--neon-pink);
+            border-color: var(--neon-pink);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+        }
+
+        .neon-pink {
+            color: var(--neon-pink);
+            text-shadow: 0 0 5px var(--neon-pink), 0 0 10px var(--neon-pink);
+        }
+
+        .neon-blue {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+        }
+
+        .neon-purple {
+            color: var(--neon-purple);
+            text-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-purple);
+        }
+
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.03) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            background-size: 100% 5px;
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .terminal-text {
+            font-family: 'Courier New', monospace;
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(5, 217, 232, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(5, 217, 232, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="grid-bg">
+    <div class="scanline"></div>
+    
+    <!-- Header -->
+    <header class="bg-black bg-opacity-80 border-b border-neon-blue shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-neon-blue rounded-full flex items-center justify-center">
+                    <i class="fas fa-terminal text-xl text-black"></i>
+                </div>
+                <h1 class="text-2xl font-bold neon-text glitch" data-text="CYBER_HUB">CYBER_HUB</h1>
+            </div>
+            
+            <div class="flex items-center space-x-6">
+                <div class="text-sm digital">
+                    <span class="neon-blue">SYSTEM TIME:</span> 
+                    <span id="time" class="neon-pink">23:59:42</span>
+                </div>
+                <div class="text-sm digital">
+                    <span class="neon-blue">NODE:</span> 
+                    <span class="neon-purple">PRIMARY</span>
+                </div>
+                <div class="relative group">
+                    <button class="px-4 py-2 bg-black bg-opacity-70 border border-neon-blue rounded-md hover:bg-opacity-100 transition">
+                        <i class="fas fa-user-shield neon-blue"></i>
+                        <span class="ml-2 neon-text">ADMIN</span>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-black bg-opacity-90 border border-neon-blue rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition duration-300 z-50">
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-neon-blue hover:bg-opacity-20">Profile</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-neon-blue hover:bg-opacity-20">Settings</a>
+                        <a href="#" class="block px-4 py-2 text-sm hover:bg-neon-blue hover:bg-opacity-20">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- Status Bar -->
+        <div class="bg-black bg-opacity-70 border border-neon-blue rounded-lg p-4 mb-6 neon-border">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="p-3 bg-black bg-opacity-50 rounded border border-neon-purple">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm neon-purple">SERVER STATUS</span>
+                        <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">ONLINE</span>
+                    </div>
+                    <div class="mt-2 h-2 bg-gray-800 rounded-full">
+                        <div class="h-full bg-neon-purple rounded-full" style="width: 87%"></div>
+                    </div>
+                    <div class="mt-1 text-xs flex justify-between">
+                        <span>LOAD: 87%</span>
+                        <span>RAM: 12/16GB</span>
+                    </div>
+                </div>
+                
+                <div class="p-3 bg-black bg-opacity-50 rounded border border-neon-blue">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm neon-blue">NETWORK</span>
+                        <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">SECURE</span>
+                    </div>
+                    <div class="mt-2 flex space-x-4">
+                        <div>
+                            <div class="text-xs">UP</div>
+                            <div class="text-lg neon-blue">12.4 <span class="text-xs">MB/s</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs">DOWN</div>
+                            <div class="text-lg neon-blue">8.7 <span class="text-xs">MB/s</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-3 bg-black bg-opacity-50 rounded border border-neon-pink">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm neon-pink">SECURITY</span>
+                        <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">ACTIVE</span>
+                    </div>
+                    <div class="mt-2 flex justify-between text-xs">
+                        <div>
+                            <div>FIREWALL</div>
+                            <div class="text-green-400">ON</div>
+                        </div>
+                        <div>
+                            <div>INTRUSIONS</div>
+                            <div class="text-red-400">2</div>
+                        </div>
+                        <div>
+                            <div>LAST SCAN</div>
+                            <div class="text-yellow-400">5m ago</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-3 bg-black bg-opacity-50 rounded border border-neon-blue">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm neon-blue">SERVICES</span>
+                        <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">12/14 RUNNING</span>
+                    </div>
+                    <div class="mt-2 grid grid-cols-3 gap-2 text-xs">
+                        <div class="text-green-400"><i class="fas fa-circle"></i> API</div>
+                        <div class="text-green-400"><i class="fas fa-circle"></i> DB</div>
+                        <div class="text-green-400"><i class="fas fa-circle"></i> AUTH</div>
+                        <div class="text-green-400"><i class="fas fa-circle"></i> CACHE</div>
+                        <div class="text-red-400"><i class="fas fa-circle"></i> MAIL</div>
+                        <div class="text-green-400"><i class="fas fa-circle"></i> LOG</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Port 3000 - Web App -->
+            <div class="bg-black bg-opacity-70 border border-neon-blue rounded-lg overflow-hidden neon-border">
+                <div class="border-b border-neon-blue p-3 flex justify-between items-center bg-black bg-opacity-50">
+                    <h3 class="font-bold neon-blue">
+                        <i class="fas fa-globe mr-2"></i> WEB APP (PORT 3000)
+                    </h3>
+                    <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">RUNNING</span>
+                </div>
+                <div class="p-4">
+                    <div class="terminal-text mb-3">
+                        <span class="neon-blue">user@cyberhub:~$</span> <span>status web-app --port 3000</span><br>
+                        <span class="text-green-400">✓ Service active since 2d 4h 12m</span><br>
+                        <span class="text-green-400">✓ 42 active connections</span><br>
+                        <span class="text-yellow-400">! New version available (v2.4.1)</span>
+                    </div>
+                    <div class="flex space-x-3 mt-4">
+                        <a href="http://localhost:3000" target="_blank" class="flex-1 bg-neon-blue bg-opacity-20 hover:bg-opacity-40 border border-neon-blue text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-external-link-alt mr-2"></i> Open
+                        </a>
+                        <button class="flex-1 bg-black bg-opacity-50 hover:bg-opacity-70 border border-neon-blue text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-cog mr-2"></i> Configure
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Port 4000 - API Service -->
+            <div class="bg-black bg-opacity-70 border border-neon-purple rounded-lg overflow-hidden neon-border">
+                <div class="border-b border-neon-purple p-3 flex justify-between items-center bg-black bg-opacity-50">
+                    <h3 class="font-bold neon-purple">
+                        <i class="fas fa-server mr-2"></i> API SERVICE (PORT 4000)
+                    </h3>
+                    <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">RUNNING</span>
+                </div>
+                <div class="p-4">
+                    <div class="terminal-text mb-3">
+                        <span class="neon-purple">user@cyberhub:~$</span> <span>status api --port 4000</span><br>
+                        <span class="text-green-400">✓ Service active since 7d 2h 33m</span><br>
+                        <span class="text-green-400">✓ 128 requests/min</span><br>
+                        <span class="text-green-400">✓ Avg response: 42ms</span>
+                    </div>
+                    <div class="flex space-x-3 mt-4">
+                        <a href="http://localhost:4000/docs" target="_blank" class="flex-1 bg-neon-purple bg-opacity-20 hover:bg-opacity-40 border border-neon-purple text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-book mr-2"></i> Docs
+                        </a>
+                        <button class="flex-1 bg-black bg-opacity-50 hover:bg-opacity-70 border border-neon-purple text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-chart-line mr-2"></i> Monitor
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Port 5000 - Database Admin -->
+            <div class="bg-black bg-opacity-70 border border-neon-pink rounded-lg overflow-hidden neon-border">
+                <div class="border-b border-neon-pink p-3 flex justify-between items-center bg-black bg-opacity-50">
+                    <h3 class="font-bold neon-pink">
+                        <i class="fas fa-database mr-2"></i> DB ADMIN (PORT 5000)
+                    </h3>
+                    <span class="text-xs px-2 py-1 bg-yellow-500 bg-opacity-20 text-yellow-400 rounded">RESTRICTED</span>
+                </div>
+                <div class="p-4">
+                    <div class="terminal-text mb-3">
+                        <span class="neon-pink">user@cyberhub:~$</span> <span>status db-admin --port 5000</span><br>
+                        <span class="text-green-400">✓ Service active since 1d 8h 15m</span><br>
+                        <span class="text-yellow-400">! Admin access required</span><br>
+                        <span class="text-yellow-400">! Last backup: 6h ago</span>
+                    </div>
+                    <div class="flex space-x-3 mt-4">
+                        <a href="http://localhost:5000" target="_blank" class="flex-1 bg-neon-pink bg-opacity-20 hover:bg-opacity-40 border border-neon-pink text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-key mr-2"></i> Login
+                        </a>
+                        <button class="flex-1 bg-black bg-opacity-50 hover:bg-opacity-70 border border-neon-pink text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-history mr-2"></i> Backup
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Port 6000 - Monitoring -->
+            <div class="bg-black bg-opacity-70 border border-neon-blue rounded-lg overflow-hidden neon-border">
+                <div class="border-b border-neon-blue p-3 flex justify-between items-center bg-black bg-opacity-50">
+                    <h3 class="font-bold neon-blue">
+                        <i class="fas fa-chart-bar mr-2"></i> MONITORING (PORT 6000)
+                    </h3>
+                    <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">RUNNING</span>
+                </div>
+                <div class="p-4">
+                    <div class="h-32 mb-3 bg-black bg-opacity-80 border border-neon-blue rounded p-2">
+                        <div class="terminal-text text-xs">
+                            <div class="flex justify-between">
+                                <span>CPU:  ▁▃▅▇▇▆▅▄▃▁▂▄▅▇</span>
+                                <span class="neon-blue">72%</span>
+                            </div>
+                            <div class="flex justify-between mt-1">
+                                <span>RAM: ▁▂▄▅▆▇▇▆▅▄▂▁▂</span>
+                                <span class="neon-blue">64%</span>
+                            </div>
+                            <div class="flex justify-between mt-1">
+                                <span>NET:  ▁▂▃▄▅▆▇▇▆▅▄▂▁</span>
+                                <span class="neon-blue">1.2MB/s</span>
+                            </div>
+                            <div class="flex justify-between mt-1">
+                                <span>DSK: ▁▂▄▅▆▇▇▆▅▄▂▁▂</span>
+                                <span class="neon-blue">58%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3 mt-2">
+                        <a href="http://localhost:6000" target="_blank" class="flex-1 bg-neon-blue bg-opacity-20 hover:bg-opacity-40 border border-neon-blue text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                        </a>
+                        <button class="flex-1 bg-black bg-opacity-50 hover:bg-opacity-70 border border-neon-blue text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-bell mr-2"></i> Alerts
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Port 7000 - File Storage -->
+            <div class="bg-black bg-opacity-70 border border-neon-purple rounded-lg overflow-hidden neon-border">
+                <div class="border-b border-neon-purple p-3 flex justify-between items-center bg-black bg-opacity-50">
+                    <h3 class="font-bold neon-purple">
+                        <i class="fas fa-folder-open mr-2"></i> FILE STORAGE (PORT 7000)
+                    </h3>
+                    <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">RUNNING</span>
+                </div>
+                <div class="p-4">
+                    <div class="terminal-text mb-3">
+                        <span class="neon-purple">user@cyberhub:~$</span> <span>status storage --port 7000</span><br>
+                        <span class="text-green-400">✓ 1.2TB/2TB available</span><br>
+                        <span class="text-green-400">✓ 42 active connections</span><br>
+                        <span class="text-yellow-400">! Backup scheduled in 2h</span>
+                    </div>
+                    <div class="flex space-x-3 mt-4">
+                        <a href="http://localhost:7000" target="_blank" class="flex-1 bg-neon-purple bg-opacity-20 hover:bg-opacity-40 border border-neon-purple text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-file-upload mr-2"></i> Upload
+                        </a>
+                        <button class="flex-1 bg-black bg-opacity-50 hover:bg-opacity-70 border border-neon-purple text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-shield-alt mr-2"></i> Secure
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Port 8000 - Message Broker -->
+            <div class="bg-black bg-opacity-70 border border-neon-pink rounded-lg overflow-hidden neon-border">
+                <div class="border-b border-neon-pink p-3 flex justify-between items-center bg-black bg-opacity-50">
+                    <h3 class="font-bold neon-pink">
+                        <i class="fas fa-exchange-alt mr-2"></i> MESSAGE BROKER (PORT 8000)
+                    </h3>
+                    <span class="text-xs px-2 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded">RUNNING</span>
+                </div>
+                <div class="p-4">
+                    <div class="terminal-text mb-3">
+                        <span class="neon-pink">user@cyberhub:~$</span> <span>status broker --port 8000</span><br>
+                        <span class="text-green-400">✓ 12 active queues</span><br>
+                        <span class="text-green-400">✓ 842 msg/min</span><br>
+                        <span class="text-green-400">✓ Avg latency: 8ms</span>
+                    </div>
+                    <div class="flex space-x-3 mt-4">
+                        <a href="http://localhost:8000" target="_blank" class="flex-1 bg-neon-pink bg-opacity-20 hover:bg-opacity-40 border border-neon-pink text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-eye mr-2"></i> Inspect
+                        </a>
+                        <button class="flex-1 bg-black bg-opacity-50 hover:bg-opacity-70 border border-neon-pink text-center py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-sliders-h mr-2"></i> Manage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Terminal Section -->
+        <div class="mt-8 bg-black bg-opacity-90 border border-neon-blue rounded-lg overflow-hidden neon-border">
+            <div class="border-b border-neon-blue p-3 flex justify-between items-center bg-black bg-opacity-50">
+                <h3 class="font-bold neon-blue">
+                    <i class="fas fa-terminal mr-2"></i> SYSTEM TERMINAL
+                </h3>
+                <div class="flex space-x-2">
+                    <button class="text-xs px-2 py-1 bg-neon-blue bg-opacity-20 hover:bg-opacity-40 border border-neon-blue rounded transition duration-300">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                    <button class="text-xs px-2 py-1 bg-neon-blue bg-opacity-20 hover:bg-opacity-40 border border-neon-blue rounded transition duration-300">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4">
+                <div id="terminal-output" class="terminal-text h-64 overflow-y-auto font-mono text-sm mb-3">
+                    <div>cyberhub@node-primary:~$ system status --all</div>
+                    <div>Loading system status...</div>
+                    <div>----------------------------------------</div>
+                    <div>SYSTEM: CyberHub Control v2.3.7</div>
+                    <div>NODE: primary (192.168.1.100)</div>
+                    <div>UPTIME: 2 days, 7 hours, 42 minutes</div>
+                    <div>CPU: Intel Xeon 8-core @ 3.2GHz (72% load)</div>
+                    <div>MEMORY: 12.4/16.0 GB (77%)</div>
+                    <div>DISK: 1.2/2.0 TB (60%)</div>
+                    <div>NETWORK: eth0 @ 1Gbps (UP: 12.4MB/s, DOWN: 8.7MB/s)</div>
+                    <div>----------------------------------------</div>
+                    <div>SERVICES:</div>
+                    <div>  ✓ web-app:3000 (42 connections)</div>
+                    <div>  ✓ api:4000 (128 req/min)</div>
+                    <div>  ✓ db-admin:5000 (restricted)</div>
+                    <div>  ✓ monitoring:6000 (active)</div>
+                    <div>  ✓ storage:7000 (1.2TB free)</div>
+                    <div>  ✓ broker:8000 (842 msg/min)</div>
+                    <div>  ✓ mail:9000 (warning: queue building)</div>
+                    <div>  ✓ auth:10000 (24 active sessions)</div>
+                    <div>----------------------------------------</div>
+                    <div>cyberhub@node-primary:~$ <span class="blink">_</span></div>
+                </div>
+                <div class="flex">
+                    <input type="text" class="flex-1 bg-black bg-opacity-50 border border-neon-blue text-green-400 px-3 py-2 rounded-l focus:outline-none focus:border-neon-pink" placeholder="Enter command...">
+                    <button class="bg-neon-blue bg-opacity-50 hover:bg-opacity-70 text-black px-4 py-2 rounded-r transition duration-300">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-80 border-t border-neon-blue mt-8 py-4">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-sm digital mb-2 md:mb-0">
+                    <span class="neon-blue">CYBERHUB</span> <span class="text-gray-400">v2.3.7</span> 
+                    <span class="mx-2 text-gray-600">|</span> 
+                    <span class="neon-purple">NODE:</span> <span class="text-gray-400">PRIMARY</span>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-neon-blue transition"><i class="fab fa-github"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-neon-blue transition"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-neon-blue transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-neon-blue transition"><i class="fas fa-question-circle"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', {hour12: false});
+            document.getElementById('time').textContent = timeStr;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // Simulate terminal typing
+        const terminalOutput = document.getElementById('terminal-output');
+        const commands = [
+            'scan network --deep',
+            'check security --firewall',
+            'analyze logs --service=api --last=1h',
+            'update status --service=mail',
+            'notify --message="Backup scheduled in 15m" --level=warning'
+        ];
+        
+        let commandIndex = 0;
+        
+        function simulateTerminal() {
+            if (commandIndex < commands.length) {
+                const currentText = terminalOutput.textContent;
+                const newText = currentText.replace(/_$/, '') + commands[commandIndex] + '\n';
+                
+                // Simulate command execution
+                terminalOutput.textContent = newText + 'Executing...\n';
+                
+                setTimeout(() => {
+                    terminalOutput.textContent = newText + '✓ Command executed successfully\ncyberhub@node-primary:~$ _';
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    commandIndex++;
+                    
+                    if (commandIndex < commands.length) {
+                        setTimeout(simulateTerminal, 2000);
+                    }
+                }, 1500);
+                
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            } else {
+                // Reset after all commands
+                commandIndex = 0;
+                setTimeout(simulateTerminal, 5000);
+            }
+        }
+        
+        // Start simulation after initial delay
+        setTimeout(simulateTerminal, 3000);
+        
+        // Handle command submission
+        document.querySelector('footer + script').previousElementSibling.querySelector('button').addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            if (input.value.trim()) {
+                const currentText = terminalOutput.textContent;
+                terminalOutput.textContent = currentText.replace(/_$/, '') + input.value + '\n> Command not recognized\ncyberhub@node-primary:~$ _';
+                input.value = '';
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+        });
+        
+        // Allow Enter key for command submission
+        document.querySelector('footer + script').previousElementSibling.querySelector('input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('footer + script').previousElementSibling.querySelector('button').click();
+            }
+        });
+    </script>
+</body>
+</html>
